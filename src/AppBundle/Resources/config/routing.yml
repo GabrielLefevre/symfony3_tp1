@@ -1,0 +1,4 @@
+app_animaux:
+    resource: "@AppBundle/Resources/config/routing/animaux.yml"
+    prefix:   /animaux
+

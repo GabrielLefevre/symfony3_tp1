@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Animaux</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ animaux.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ animaux.name }}</td>
+            </tr>
+            <tr>
+                <th>Age</th>
+                <td>{{ animaux.age }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ animaux.type }}</td>
+            </tr>
+            <tr>
+                <th>sexeMasc</th>
+                <td>{{ animaux.sexeMasc }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('animaux_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('animaux_edit', { 'id': animaux.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}
