@@ -155,4 +155,8 @@ class Animaux
     {
         return $this->sexeMasc;
     }
+
+    public function __toString() {
+        return $this->name;
+    }
 }

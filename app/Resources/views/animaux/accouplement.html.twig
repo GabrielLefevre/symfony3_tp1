@@ -3,22 +3,16 @@
 {% block body %}
 <h1>Animaux list Accouplement</h1>
     <p> Choisir deux animaux pour la reproduction : </p>
-    <select name="animal1" id="animal1">
-        {% for animal in animaux %}
-            <option> {{ animal.name }}</option>
-        {%  endfor %}
-    </select>
-<br/>
-    <select name="animal2" id="animal2">
-        {% for animal2 in animaux %}
-            <option> {{ animal2.name }}</option>
-        {%  endfor %}
-    </select>
 
     {{ form_start(accouplement_form) }}
-    <input type="submit" value="Accouplement">
+        {{ form_widget(accouplement_form) }}
     {{ form_end(accouplement_form) }}
 
     <br/>
     <a href="{{ path('animaux_index') }}">Back to the list</a>
+
+    {% if methods == true %}
+        <p>Nous sommes en POST</p>
+    {% endif %}
+
 {% endblock %}

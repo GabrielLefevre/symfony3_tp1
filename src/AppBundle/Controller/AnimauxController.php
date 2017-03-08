@@ -3,8 +3,12 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Animaux;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\HttpKernel\Tests\Bundle\NamedBundle;
 
 /**
  * Animaux controller.
@@ -129,27 +133,66 @@ class AnimauxController extends Controller
      */
     public function accouplementAction(Request $request)
     {
-        $accouplementForm = $this->createAccouplementForm();
-
+        $post = false;
         $em = $this->getDoctrine()->getManager();
         $animaux = $em->getRepository('AppBundle:Animaux')->findAll();
+
+        $accouplementForm = $this->createAccouplementForm($animaux);
+
+
+        if($request->getMethod() == "POST") {
+            $post = true;
+            $r="";
+            $accouplementForm->handleRequest($request);
+            if ($accouplementForm->isSubmitted() && $accouplementForm->isValid()) {
+                //var_dump($accouplementForm->getData());
+                $data=($accouplementForm->getData());
+                $a1=$data["Animal1"];
+                $a2=$data["Animal2"];
+                 if($a1->getName() == $a2->getName()) {
+                    echo ($a1->getName()." ne peut pas se reproduire sans son partenaire.");
+                    // all
+                }
+                else if($a1->getAge()<3 || $a2->getAge()<3 ) {
+                    echo("L'un des animaux est trop jeune, ils doivent avoir au moins 3ans pour se reproduire. ".$a1->getName()." à ".$a1->getAge()."ans, ".$a2->getName()." à ".$a2->getAge()."ans");
+                    // tata + toto
+                }
+                else if ($a1->getType() != $a2->getType()) {
+                    echo("Les deux animaux ne sont pas du même type.".$a1->getName()." est un(e) ".$a1->getType().", ".$a2->getName()." est un(e) ".$a2->getType());
+                    // tata + babar
+                }
+                else if ($a1->getSexeMasc() == $a2->getSexeMasc()) {
+                    echo("Les deuxs animaux sont de même sexe.");
+                    // tata+tutu
+                }
+                else {
+                     // ajout d'un nouvel animal
+                }
+
+            }
+        }
+
+
         return $this->render('animaux/accouplement.html.twig',  array(
             'animaux' => $animaux,
+            'methods' => $post,
             'accouplement_form' => $accouplementForm->createView()));
     }
 
-    private function createAccouplementForm()
+    private function createAccouplementForm($animaux)
     {
-        return $this->createFormBuilder()
+       return $this->createFormBuilder()
             ->setAction($this->generateUrl('animaux_accouplement', array()))
             ->setMethod('POST')
             ->getForm()
-            ;
+           ->add('Animal1', EntityType::class, array('choices'  => $animaux, 'class'=>'AppBundle:Animaux'))
+           ->add('Animal2', EntityType::class, array('choices'  => $animaux, 'class'=>'AppBundle:Animaux'))
+           ->add('Accoupler', SubmitType::class)
+           ;
     }
 
-    public function accoupleAction(Request $r)
-    {
-        echo "test";
-    }
+
+
+
 }
 
