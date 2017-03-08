@@ -37,15 +37,12 @@
         </tbody>
     </table>
 
-    <select>
-        {% for animaux in animauxes %}
-            {{ animaux.name }}
-        {% endfor %}
-    </select>
-
     <ul>
         <li>
             <a href="{{ path('animaux_new') }}">Create a new animaux</a>
+        </li>
+        <li>
+            <a href="{{ path('animaux_accouplement') }}">Accoupler des animaux</a>
         </li>
     </ul>
 {% endblock %}

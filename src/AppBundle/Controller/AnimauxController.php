@@ -129,8 +129,27 @@ class AnimauxController extends Controller
      */
     public function accouplementAction(Request $request)
     {
-        return $this->render('animaux/accouplement.html.twig', array());
+        $accouplementForm = $this->createAccouplementForm();
+
+        $em = $this->getDoctrine()->getManager();
+        $animaux = $em->getRepository('AppBundle:Animaux')->findAll();
+        return $this->render('animaux/accouplement.html.twig',  array(
+            'animaux' => $animaux,
+            'accouplement_form' => $accouplementForm->createView()));
+    }
+
+    private function createAccouplementForm()
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('animaux_accouplement', array()))
+            ->setMethod('POST')
+            ->getForm()
+            ;
+    }
+
+    public function accoupleAction(Request $r)
+    {
+        echo "test";
     }
 }
-
 
