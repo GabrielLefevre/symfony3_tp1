@@ -1,0 +1,8 @@
+services:
+    app.entity.animaux:
+        class: AppBundle\Entity\Animaux
+    app.validateur.accouplement:
+        class: AppBundle\Validateur\Accouplement
+        arguments:
+            - app.entity.animaux
+            - doctrine.orm.entity_manager
