@@ -4,5 +4,5 @@ services:
     app.validateur.accouplement:
         class: AppBundle\Validateur\Accouplement
         arguments:
-            - app.entity.animaux
-            - doctrine.orm.entity_manager
+            - '@app.entity.animaux'
+            - '@doctrine.orm.entity_manager'

@@ -17,3 +17,5 @@
 /.idea/
 /phpunit.xml.dist
 /gb
+/node_modules/
+/package.json

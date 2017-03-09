@@ -6,6 +6,7 @@
 
     {{ form_start(accouplement_form) }}
         {{ form_widget(accouplement_form) }}
+        {{  form_rest(accouplement_form) }}
     {{ form_end(accouplement_form) }}
 
     <br/>
@@ -13,6 +14,7 @@
 
     {% if methods == true %}
         <p>Nous sommes en POST</p>
+        {{ reponse }}
     {% endif %}
 
 {% endblock %}

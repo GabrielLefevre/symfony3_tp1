@@ -134,6 +134,7 @@ class AnimauxController extends Controller
     public function accouplementAction(Request $request)
     {
         $post = false;
+        $r ="";
         $em = $this->getDoctrine()->getManager();
         $animaux = $em->getRepository('AppBundle:Animaux')->findAll();
         $accouplementForm = $this->createAccouplementForm($animaux);
@@ -150,12 +151,13 @@ class AnimauxController extends Controller
                 $srvAccouplement = $this->container->get('app.validateur.accouplement');
                 $srvAccouplement->setParent1($a1);
                 $srvAccouplement->setParent2($a2);
-                $srvAccouplement->verificationAnimaux();
+                $r = $srvAccouplement->verificationParents();
             }
         }
         return $this->render('animaux/accouplement.html.twig',  array(
             'animaux' => $animaux,
             'methods' => $post,
+            'reponse' => $r,
             'accouplement_form' => $accouplementForm->createView()));
     } // accouplementAction
 
