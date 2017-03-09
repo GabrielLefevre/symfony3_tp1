@@ -19,3 +19,6 @@
 /gb
 /node_modules/
 /package.json
+/yarn.lock
+/.sass-cache
+/config.rb
