@@ -4,26 +4,26 @@ animaux_index:
     methods:  GET
 
 animaux_show:
-    path:     /{id}/show
+    path:     /{id}/show/
     defaults: { _controller: "AppBundle:Animaux:show" }
     methods:  GET
 
 animaux_new:
-    path:     /new
+    path:     /new/
     defaults: { _controller: "AppBundle:Animaux:new" }
     methods:  [GET, POST]
 
 animaux_edit:
-    path:     /{id}/edit
+    path:     /{id}/edit/
     defaults: { _controller: "AppBundle:Animaux:edit" }
     methods:  [GET, POST]
 
 animaux_delete:
-    path:     /{id}/delete
+    path:     /{id}/delete/
     defaults: { _controller: "AppBundle:Animaux:delete" }
     methods:  DELETE
 
 animaux_accouplement:
-    path:     /accouplement
+    path:     /accouplement/
     defaults: { _controller: "AppBundle:Animaux:accouplement" }
     methods:  [GET, POST]
