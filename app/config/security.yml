@@ -32,6 +32,8 @@ security:
         - { path: ^/register, role: ROLE_ADMIN }
         - { path: ^/resetting, role: ROLE_ADMIN }
         - { path: ^/animaux/$, role: ROLE_USER }
+        - { path: ^/type/$, role: ROLE_USER }
+        - { path: ^/type/newType/, role: ROLE_USER }
         - { path: ^/animaux/[0-9]+/show/$, role: ROLE_USER }
         - { path: ^/animaux/[0-9]+/edit/$, role: ROLE_ADMIN }
         - { path: ^/animaux/[0-9]+/delete/$, role: ROLE_ADMIN }

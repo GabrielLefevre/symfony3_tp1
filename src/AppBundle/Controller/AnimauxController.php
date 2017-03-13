@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Animaux;
+use AppBundle\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -23,9 +24,11 @@ class AnimauxController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-
         $animauxes = $em->getRepository('AppBundle:Animaux')->findAll();
-
+        for ($i=0;$i<count($animauxes);$i++) {
+            $animauxes[$i]->setType($animauxes[$i]->getType()->getName());
+            $animauxes[$i]->setUser($animauxes[$i]->getUser()->getUsername());
+        }
         return $this->render('animaux/index.html.twig', array(
             'animauxes' => $animauxes,
         ));
@@ -62,9 +65,11 @@ class AnimauxController extends Controller
     public function showAction(Animaux $animaux)
     {
         $deleteForm = $this->createDeleteForm($animaux);
-
+        $gd = $this->getDoctrine();
+        $t = $animaux->getType()->getName();
         return $this->render('animaux/show.html.twig', array(
             'animaux' => $animaux,
+            'type' => $t,
             'delete_form' => $deleteForm->createView(),
         ));
     }
@@ -83,7 +88,7 @@ class AnimauxController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('animaux_edit', array('id' => $animaux->getId()));
+            return $this->redirectToRoute('animaux_show', array('id' => $animaux->getId()));
         }
 
         return $this->render('animaux/edit.html.twig', array(

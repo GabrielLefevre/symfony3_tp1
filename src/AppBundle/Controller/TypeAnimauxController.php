@@ -17,7 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpKernel\Tests\Bundle\NamedBundle;
 
 
-class Typecontroller extends Controller
+class TypeAnimauxController extends Controller
 {
 
     public function newTypeAction(Request $request)
@@ -31,12 +31,23 @@ class Typecontroller extends Controller
             $em->persist($type);
             $em->flush($type);
 
-            return $this->redirectToRoute('animaux_show', array('id' => $type->getId()));
+            return $this->redirectToRoute('animaux_index', array());
         }
 
         return $this->render('typeAnimaux/newType.html.twig', array(
             'type' => $type,
             'form' => $form->createView(),
+        ));
+    }
+
+    public function indexAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $typees = $em->getRepository('AppBundle:TypeAnimaux')->findAll();
+
+        return $this->render('typeAnimaux/index.html.twig', array(
+            'typees' => $typees,
         ));
     }
 

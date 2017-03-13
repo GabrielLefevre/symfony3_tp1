@@ -1,0 +1,9 @@
+typeAnimaux_newType:
+    path:     /newType/
+    defaults: { _controller: "AppBundle:TypeAnimaux:newType" }
+    methods:  [GET, POST]
+
+typeAnimaux_index:
+    path:     /
+    defaults: { _controller: "AppBundle:TypeAnimaux:index" }
+    methods:  GET

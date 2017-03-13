@@ -29,11 +29,11 @@ class Animaux
     private $name;
 
     /**
-     * @var boolean
+     * @var string
      *
-     * @ORM\Column(name="sexeMasc", type="boolean")
+     * @ORM\Column(name="sexe", type="string")
      */
-    private $sexeMasc;
+    private $sexe;
 
     /**
      * @var int
@@ -43,12 +43,19 @@ class Animaux
     private $age;
 
     /**
-     * @var string
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TypeAnimaux")
      *
-     * @ORM\Column(name="type", type="string", length=255)
+     * @ORM\JoinColumn(name="type_animaux", referencedColumnName="id")
      */
     private $type;
 
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     *
+     * @ORM\JoinColumn(name="fos_user", referencedColumnName="id")
+     */
+    private $user;
 
     /**
      * Get id
@@ -133,27 +140,51 @@ class Animaux
     }
 
     /**
-     * Set sexeMasc
+     * Set sexe
      *
-     * @param boolean $sexeMasc
+     * @param string $sexe
      *
      * @return Animaux
      */
-    public function setSexeMasc($sexeMasc)
+    public function setSexe($sexe)
     {
-        $this->sexeMasc = $sexeMasc;
+        $this->sexe = $sexe;
 
         return $this;
     }
 
     /**
-     * Get sexeMasc
+     * Get sexe
      *
-     * @return boolean
+     * @return string
      */
-    public function getSexeMasc()
+    public function getSexe()
     {
-        return $this->sexeMasc;
+        return $this->sexe;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Animaux
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 
     public function __toString() {
