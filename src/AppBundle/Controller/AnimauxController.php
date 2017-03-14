@@ -21,14 +21,18 @@ class AnimauxController extends Controller
      * Lists all animaux entities.
      *
      */
+
+
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
         $animauxes = $em->getRepository('AppBundle:Animaux')->findAll();
+       // var_dump($animauxes[2]);
         for ($i=0;$i<count($animauxes);$i++) {
             $animauxes[$i]->setType($animauxes[$i]->getType()->getName());
             $animauxes[$i]->setUser($animauxes[$i]->getUser()->getUsername());
         }
+
         return $this->render('animaux/index.html.twig', array(
             'animauxes' => $animauxes,
         ));
@@ -41,7 +45,11 @@ class AnimauxController extends Controller
     public function newAction(Request $request)
     {
         $animaux = new Animaux();
-        $form = $this->createForm('AppBundle\Form\AnimauxType', $animaux);
+        $currentuser = $this->currentUser();
+        $currentuserlisttype = $currentuser->getType();
+       // var_dump($currentuserlisttype);
+
+        $form = $this->createForm('AppBundle\Form\AnimauxType', $animaux,['currentuser'=>$currentuser, 'listtype'=>$currentuserlisttype]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -81,9 +89,14 @@ class AnimauxController extends Controller
      */
     public function editAction(Request $request, Animaux $animaux)
     {
+
+        $currentuser = $this->currentUser();
+
         $deleteForm = $this->createDeleteForm($animaux);
-        $editForm = $this->createForm('AppBundle\Form\AnimauxType', $animaux);
+        $editForm = $this->createForm('AppBundle\Form\AnimauxType', $animaux,['currentuser'=>$currentuser]);
         $editForm->handleRequest($request);
+
+
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
@@ -178,9 +191,13 @@ class AnimauxController extends Controller
            ;
     }
 
+    private function currentUser() {
+        $em = $this->getDoctrine()->getManager();
+        $currentusername = $this->get('security.token_storage')->getToken()->getUserName();
+        $currentuser = $em->getRepository('AppBundle:User')->findOneBy(array('username'=>$currentusername));
 
-
-
+        return $currentuser;
+    }
 
 
 }

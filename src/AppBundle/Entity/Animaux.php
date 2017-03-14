@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Animaux
@@ -23,13 +24,23 @@ class Animaux
 
     /**
      * @var string
-     *
+     * @Assert\Type("string")
+     * @Assert\NotBlank(message="donnez un nom à votre animal.")
+     * @Assert\Length(
+     *     min=3,
+     *     max=12,
+     *     minMessage="The name is too short.",
+     *     maxMessage="The name is too long.")
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     private $name;
 
     /**
      * @var string
+     * @Assert\Type("string")
+     * @Assert\Choice(
+     *     choices = { "Male", "Femelle" },
+     *     message = "Choose a valid gender.")
      *
      * @ORM\Column(name="sexe", type="string")
      */
@@ -37,6 +48,14 @@ class Animaux
 
     /**
      * @var int
+     * @Assert\Type("integer")
+     * @Assert\NotNull()
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 25,
+     *      minMessage = " il faut au minimum un animal âgé de {{ limit }} année. ",
+     *      maxMessage = "votre animal ne peut pas avoir plus de {{ limit }} ans."
+     * )
      *
      * @ORM\Column(name="age", type="integer")
      */

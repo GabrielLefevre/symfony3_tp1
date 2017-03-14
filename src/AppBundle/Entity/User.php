@@ -34,9 +34,15 @@ class User extends BaseUser
 
     /**
      *@ORM\ManyToMany(targetEntity="AppBundle\Entity\TypeAnimaux")
+     * @ORM\JoinTable(name="user_type",
+     *      joinColumns={@ORm\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
+     *      )
      * 
      */
     private $type;
+
+
 
 
     public function __construct()
@@ -45,5 +51,40 @@ class User extends BaseUser
         // your own logic
     }
 
+
+
+    /**
+     * Add type
+     *
+     * @param \AppBundle\Entity\TypeAnimaux $type
+     *
+     * @return User
+     */
+    public function addType(\AppBundle\Entity\TypeAnimaux $type)
+    {
+        $this->type[] = $type;
+
+        return $this;
+    }
+
+    /**
+     * Remove type
+     *
+     * @param \AppBundle\Entity\TypeAnimaux $type
+     */
+    public function removeType(\AppBundle\Entity\TypeAnimaux $type)
+    {
+        $this->type->removeElement($type);
+    }
+
+    /**
+     * Get type
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
 }

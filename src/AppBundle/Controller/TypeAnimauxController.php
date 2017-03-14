@@ -45,7 +45,7 @@ class TypeAnimauxController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $typees = $em->getRepository('AppBundle:TypeAnimaux')->findAll();
-
+        var_dump($typees[4]);
         return $this->render('typeAnimaux/index.html.twig', array(
             'typees' => $typees,
         ));
