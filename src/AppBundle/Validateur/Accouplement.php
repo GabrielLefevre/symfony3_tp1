@@ -11,6 +11,7 @@ namespace AppBundle\Validateur;
 
 use AppBundle\Entity\Animaux;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class Accouplement
 {
@@ -19,10 +20,11 @@ class Accouplement
     private $parent1;
     private $parent2;
     private $reponse="";
-
-    function __construct(Animaux $a1, EntityManager $em) {
+    private $user;
+    function __construct(Animaux $a1, EntityManager $em, TokenStorage $token ) {
         $this->animaux=$a1;
         $this->em=$em;
+        $this->user = $token->getToken()->getUser();
 
     }
 
@@ -47,12 +49,11 @@ class Accouplement
             $this->reponse="Les deux animaux ne sont pas du même type.".$this->parent1->getName()." est un(e) ".$this->parent1->getType().", ".$this->parent2->getName()." est un(e) ".$this->parent2->getType();
             // tata + babar
         }
-        else if ($this->parent1->getSexeMasc() == $this->parent2->getSexeMasc()) {
+        else if ($this->parent1->getSexe() == $this->parent2->getSexe()) {
             $this->reponse="Les deuxs animaux sont de même sexe.";
             // tata+tutu
         }
         else {
-
             $animaux = $this->createBebe();
 
             $this->reponse = "Votre bébé est née.";
@@ -67,8 +68,9 @@ class Accouplement
         $animaux->setName($this->createNameBebe());
         $animaux->setAge(0);
         $animaux->setType($this->parent1->getType());
-        $sexerandom = (bool)rand(0,1);
-        $animaux->setSexeMasc($sexerandom);
+        $animaux->setUser($this->parent1->getUser());
+        //$sexerandom = rand(0,1);
+        $animaux->setSexe("Male");
         return $animaux;
     }
 

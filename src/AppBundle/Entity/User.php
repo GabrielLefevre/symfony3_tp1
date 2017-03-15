@@ -26,7 +26,7 @@ class User extends BaseUser
 
 
     /**
-     *
+     *@ORM\OneToMany(targetEntity="AppBundle\Entity\Animaux", mappedBy="user")
      *
      */
     private $animaux;
@@ -85,6 +85,16 @@ class User extends BaseUser
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Get animaux
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAnimaux()
+    {
+        return $this->animaux;
     }
 
 }

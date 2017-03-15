@@ -70,9 +70,10 @@ class Animaux
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      *
-     * @ORM\JoinColumn(name="fos_user", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="animaux")
+     *
+     * @ORM\JoinColumn(name="fos_user", referencedColumnName="id", nullable=false)
      */
     private $user;
 

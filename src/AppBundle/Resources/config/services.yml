@@ -6,3 +6,4 @@ services:
         arguments:
             - '@app.entity.animaux'
             - '@doctrine.orm.entity_manager'
+            - '@security.token_storage'

@@ -8,6 +8,15 @@ services:
         class: AppBundle\Form\RegistrationType
         tags:
             - { name: form.type, alias: app_user_registration }
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    app.form.animaux:
+        class: AppBundle\Form\AnimauxType
+        arguments:
+            - '@security.token_storage'
+        tags:
+            - { name: form.type}
+    app.form.accouplement:
+        class: AppBundle\Form\AccouplementType
+        arguments:
+            - '@security.token_storage'
+        tags:
+            - { name: form.type}

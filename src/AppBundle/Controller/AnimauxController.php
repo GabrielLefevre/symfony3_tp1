@@ -6,7 +6,6 @@ use AppBundle\Entity\Animaux;
 use AppBundle\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpKernel\Tests\Bundle\NamedBundle;
@@ -27,12 +26,6 @@ class AnimauxController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $animauxes = $em->getRepository('AppBundle:Animaux')->findAll();
-       // var_dump($animauxes[2]);
-        for ($i=0;$i<count($animauxes);$i++) {
-            $animauxes[$i]->setType($animauxes[$i]->getType()->getName());
-            $animauxes[$i]->setUser($animauxes[$i]->getUser()->getUsername());
-        }
-
         return $this->render('animaux/index.html.twig', array(
             'animauxes' => $animauxes,
         ));
@@ -45,11 +38,7 @@ class AnimauxController extends Controller
     public function newAction(Request $request)
     {
         $animaux = new Animaux();
-        $currentuser = $this->currentUser();
-        $currentuserlisttype = $currentuser->getType();
-       // var_dump($currentuserlisttype);
-
-        $form = $this->createForm('AppBundle\Form\AnimauxType', $animaux,['currentuser'=>$currentuser, 'listtype'=>$currentuserlisttype]);
+        $form = $this->createForm('AppBundle\Form\AnimauxType', $animaux);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -74,10 +63,8 @@ class AnimauxController extends Controller
     {
         $deleteForm = $this->createDeleteForm($animaux);
         $gd = $this->getDoctrine();
-        $t = $animaux->getType()->getName();
         return $this->render('animaux/show.html.twig', array(
             'animaux' => $animaux,
-            'type' => $t,
             'delete_form' => $deleteForm->createView(),
         ));
     }
@@ -90,10 +77,8 @@ class AnimauxController extends Controller
     public function editAction(Request $request, Animaux $animaux)
     {
 
-        $currentuser = $this->currentUser();
-
         $deleteForm = $this->createDeleteForm($animaux);
-        $editForm = $this->createForm('AppBundle\Form\AnimauxType', $animaux,['currentuser'=>$currentuser]);
+        $editForm = $this->createForm('AppBundle\Form\AnimauxType', $animaux);
         $editForm->handleRequest($request);
 
 
@@ -142,7 +127,7 @@ class AnimauxController extends Controller
             ->setAction($this->generateUrl('animaux_delete', array('id' => $animaux->getId())))
             ->setMethod('DELETE')
             ->getForm()
-        ;
+            ;
     }
 
     /**
@@ -153,16 +138,12 @@ class AnimauxController extends Controller
     {
         $post = false;
         $r ="";
-        $em = $this->getDoctrine()->getManager();
-        $animaux = $em->getRepository('AppBundle:Animaux')->findAll();
-        $accouplementForm = $this->createAccouplementForm($animaux);
-
+        $form = $this->createForm('AppBundle\Form\AccouplementType');
+        $form->handleRequest($request);
         if($request->getMethod() == "POST") {
             $post = true;
-            $accouplementForm->handleRequest($request);
-            if ($accouplementForm->isSubmitted() && $accouplementForm->isValid()) {
-                //var_dump($accouplementForm->getData());
-                $data=($accouplementForm->getData());
+            if ($form->isSubmitted() && $form->isValid()) {
+                $data=($form->getData());
                 $a1=$data["Animal1"];
                 $a2=$data["Animal2"];
 
@@ -172,33 +153,11 @@ class AnimauxController extends Controller
                 $r = $srvAccouplement->verificationParents();
             }
         }
+
         return $this->render('animaux/accouplement.html.twig',  array(
-            'animaux' => $animaux,
             'methods' => $post,
             'reponse' => $r,
-            'accouplement_form' => $accouplementForm->createView()));
+            'accouplement_form' => $form->createView()));
     } // accouplementAction
 
-    private function createAccouplementForm($animaux)
-    {
-       return $this->createFormBuilder()
-            ->setAction($this->generateUrl('animaux_accouplement', array()))
-            ->setMethod('POST')
-            ->getForm()
-           ->add('Animal1', EntityType::class, array('choices'  => $animaux, 'class'=>'AppBundle:Animaux'))
-           ->add('Animal2', EntityType::class, array('choices'  => $animaux, 'class'=>'AppBundle:Animaux'))
-           ->add('Accoupler', SubmitType::class)
-           ;
-    }
-
-    private function currentUser() {
-        $em = $this->getDoctrine()->getManager();
-        $currentusername = $this->get('security.token_storage')->getToken()->getUserName();
-        $currentuser = $em->getRepository('AppBundle:User')->findOneBy(array('username'=>$currentusername));
-
-        return $currentuser;
-    }
-
-
 }
-
