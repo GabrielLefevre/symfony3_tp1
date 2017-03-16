@@ -20,3 +20,13 @@ services:
             - '@security.token_storage'
         tags:
             - { name: form.type}
+    app.event.animal.add:
+        class: AppBundle\Event\AnimalEvent
+        tags:
+            - {name: animal.event_add}
+    app.eventlistener.animal:
+        class: AppBundle\EventListener\AnimalListener
+        arguments:
+            - '@app.validateur.accouplement'
+        tags:
+            - { name: kernel.event_listener, event:app.event.animal.add, method: verifAdd}

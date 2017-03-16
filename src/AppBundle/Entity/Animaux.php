@@ -28,7 +28,7 @@ class Animaux
      * @Assert\NotBlank(message="donnez un nom à votre animal.")
      * @Assert\Length(
      *     min=3,
-     *     max=12,
+     *     max=40,
      *     minMessage="The name is too short.",
      *     maxMessage="The name is too long.")
      * @ORM\Column(name="name", type="string", length=255, unique=true)

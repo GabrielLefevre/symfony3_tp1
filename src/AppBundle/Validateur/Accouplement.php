@@ -15,14 +15,13 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class Accouplement
 {
-    private $animaux;
+    private $bebe;
     private $em;
     private $parent1;
     private $parent2;
-    private $reponse="";
     private $user;
-    function __construct(Animaux $a1, EntityManager $em, TokenStorage $token ) {
-        $this->animaux=$a1;
+    function __construct(Animaux $bebe, EntityManager $em, TokenStorage $token ) {
+        $this->bebe=$bebe;
         $this->em=$em;
         $this->user = $token->getToken()->getUser();
 
@@ -32,46 +31,51 @@ class Accouplement
         $this->parent1=$p1;
     }
 
+    public function getParent1() {
+        return $this->parent1;
+    }
+
+    public function getParent2() {
+        return $this->parent2;
+    }
+
     public function setParent2( Animaux $p2) {
         $this->parent2=$p2;
     }
 
+    public function getBebe() {
+        return $this->bebe;
+    }
+
     public function verificationParents() {
-        if($this->parent1->getName() == $this->parent2->getName()) {
-            $this->reponse= $this->parent1->getName()." ne peut pas se reproduire sans son partenaire.";
-            // all
-        }
-        else if($this->parent1->getAge()<3 || $this->parent2->getAge()<3 ) {
-            $this->reponse="L'un des animaux est trop jeune, ils doivent avoir au moins 3ans pour se reproduire. ".$this->parent1->getName()." à ".$this->parent1->getAge()."ans, ".$this->parent2->getName()." à ".$this->parent2->getAge()."ans";
-            // tata + toto
+        if($this->parent1->getAge()<3 || $this->parent2->getAge()<3 ) {
+            return false;
         }
         else if ($this->parent1->getType() != $this->parent2->getType()) {
-            $this->reponse="Les deux animaux ne sont pas du même type.".$this->parent1->getName()." est un(e) ".$this->parent1->getType().", ".$this->parent2->getName()." est un(e) ".$this->parent2->getType();
-            // tata + babar
+            return false;
         }
         else if ($this->parent1->getSexe() == $this->parent2->getSexe()) {
-            $this->reponse="Les deuxs animaux sont de même sexe.";
-            // tata+tutu
+            return false;
         }
         else {
-            $animaux = $this->createBebe();
-
-            $this->reponse = "Votre bébé est née.";
-            $this->em->persist($animaux);
-            $this->em->flush($animaux);
+            return true;
         }
-        return $this->reponse;
     }
 
     public function createBebe() {
-        $animaux = clone $this->animaux;
-        $animaux->setName($this->createNameBebe());
-        $animaux->setAge(0);
-        $animaux->setType($this->parent1->getType());
-        $animaux->setUser($this->parent1->getUser());
-        //$sexerandom = rand(0,1);
-        $animaux->setSexe("Male");
-        return $animaux;
+        $bebe = clone $this->bebe;
+        $bebe->setName($this->createNameBebe());
+        $bebe->setAge(0);
+        $bebe->setType($this->parent1->getType());
+        $bebe->setUser($this->parent1->getUser());
+        $sexerandom = rand(0,1);
+        if($sexerandom == 0) {
+            $bebe->setSexe("Femelle");
+        }
+        else {
+            $bebe->setSexe("Male");
+        }
+        return $bebe;
     }
 
     public function createNameBebe() {

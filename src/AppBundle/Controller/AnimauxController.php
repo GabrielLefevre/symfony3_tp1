@@ -1,13 +1,13 @@
 <?php
 
 namespace AppBundle\Controller;
-
+use AppBundle\GlobalEvents;
 use AppBundle\Entity\Animaux;
 use AppBundle\Entity\User;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use AppBundle\Event\AnimalEvent;
+use AppBundle\EventListener\AnimalListener;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpKernel\Tests\Bundle\NamedBundle;
 
 /**
@@ -42,6 +42,14 @@ class AnimauxController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $animalEvent = $this->get('app.event.animal.add');
+            $animalEvent -> setAnimal1($animaux);
+            $animalEvent -> setAnimal2($animaux);
+            $dispatcher = $this->get('event_dispatcher');
+            $dispatcher-> dispatch(GlobalEvents::animal_add, $animalEvent);
+            $animaux = $animalEvent->getAnimal1();
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($animaux);
             $em->flush($animaux);
@@ -62,7 +70,7 @@ class AnimauxController extends Controller
     public function showAction(Animaux $animaux)
     {
         $deleteForm = $this->createDeleteForm($animaux);
-        $gd = $this->getDoctrine();
+        //$gd = $this->getDoctrine();
         return $this->render('animaux/show.html.twig', array(
             'animaux' => $animaux,
             'delete_form' => $deleteForm->createView(),
@@ -136,28 +144,31 @@ class AnimauxController extends Controller
      */
     public function accouplementAction(Request $request)
     {
-        $post = false;
-        $r ="";
+        $reponse="";
         $form = $this->createForm('AppBundle\Form\AccouplementType');
         $form->handleRequest($request);
-        if($request->getMethod() == "POST") {
-            $post = true;
             if ($form->isSubmitted() && $form->isValid()) {
-                $data=($form->getData());
-                $a1=$data["Animal1"];
-                $a2=$data["Animal2"];
+                $data = ($form->getData());
+                $a1 = $data["Animal1"];
+                $a2 = $data["Animal2"];
 
-                $srvAccouplement = $this->container->get('app.validateur.accouplement');
-                $srvAccouplement->setParent1($a1);
-                $srvAccouplement->setParent2($a2);
-                $r = $srvAccouplement->verificationParents();
+                $animalEvent = $this->get('app.event.animal.add');
+                $animalEvent->setAnimal1($a1);
+                $animalEvent->setAnimal2($a2);
+                $dispatcher = $this->get('event_dispatcher');
+                $dispatcher->dispatch(GlobalEvents::animal_add, $animalEvent);
+                $reponse = $animalEvent->getReponse();
+                if ($animalEvent->isValidation()) {
+                    $animaux = $animalEvent->getAnimal1();
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($animaux);
+                    $em->flush($animaux);
+                }
+
             }
-        }
-
         return $this->render('animaux/accouplement.html.twig',  array(
-            'methods' => $post,
-            'reponse' => $r,
+            'reponse' => $reponse,
             'accouplement_form' => $form->createView()));
-    } // accouplementAction
+        }
 
 }
