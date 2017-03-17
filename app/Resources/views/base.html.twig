@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <title>{% block title %}Welcome!{% endblock %}</title>
     {% block stylesheets %}
-        {% stylesheets '../node_modules/bootstrap/dist/css/*' filter='cssrewrite' %}
+        {% stylesheets '../node_modules/bootstrap/dist/css/*'
+                        '../app/Ressources/public/css/styles.css' filter='cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
     {% endblock %}
@@ -16,15 +17,27 @@
 <header>
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
+
             <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">nav mobile</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
                 <a class="navbar-brand" href="{{ path('index_index') }}">Accueil</a>
             </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ path('animaux_index') }}">Animaux </a></li>
-                    <li><a href="{{ path('animaux_accouplement') }}">Accouplement</a></li>
+                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Animaux <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ path('animaux_index') }}">Liste des animaux</a></li>
+                            <li><a href="{{ path('animaux_accouplement') }}">Accoupler mes animaux</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
@@ -40,8 +53,11 @@
 <body>
 {% block body %}{% endblock %}
 {% block javascripts %}
-    {%  javascripts '../node_modules/bootstrap/dist/js/*' %}
-        <link rel="js" href="{{ asset_url }}"/>
+    {%  javascripts
+        'https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'
+         '../node_modules/bootstrap/dist/js/*'
+         '../node_modules/bootstrap/js/*'%}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
     {%  endjavascripts  %}
 {% endblock %}
 </body>
@@ -58,3 +74,5 @@
         <hr />
 </footer>
 </html>
+
+<!-- https://i58.servimg.com/u/f58/19/18/85/99/logo_c10.png -->

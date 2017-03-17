@@ -78,6 +78,23 @@ class Animaux
     private $user;
 
     /**
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Image necessaire", groups = {"create"})
+     * @Assert\Image(
+     *      minWidth = 200,
+     *     maxWidth = 400,
+     *     minHeight = 200,
+     *     maxHeight = 400,
+     *     groups = {"create"}
+     *
+     * )
+     */
+    private $photo;
+
+
+
+
+    /**
      * Get id
      *
      * @return int
@@ -206,6 +223,25 @@ class Animaux
     {
         return $this->user;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    /**
+     * @param mixed $photo
+     */
+    public function setPhoto($photo)
+    {
+        $this->photo = $photo;
+    }
+
+
+
 
     public function __toString() {
         return $this->name;

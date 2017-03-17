@@ -1,50 +1,54 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Animaux list</h1>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel='stylesheet' type='text/css'>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="panel panel-default panel-table">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col col-xs-6">
+                                <h3 class="panel-title">Animaux</h3>
+                            </div>
+                            <div class="col col-xs-6 text-right">
+                                <a href="{{ path(  'animaux_new' )}}" class="btn btn-success"><em class="fa fa-plus"></em></a>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Age</th>
-                <th>type</th>
-                <th>Sexe</th>
-                <th>Propriétaire</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for animaux in animauxes %}
-            <tr>
-                <td><a href="{{ path('animaux_show', { 'id': animaux.id }) }}">{{ animaux.id }}</a></td>
-                <td>{{ animaux.name }}</td>
-                <td>{{ animaux.age }}</td>
-                <td>{{ animaux.type }}</td>
-                <td>{{ animaux.sexe }}</td>
-                <td>{{ animaux.user }}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('animaux_show', { 'id': animaux.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('animaux_edit', { 'id': animaux.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped table-bordered table-list">
+                            <thead>
+                            <tr>
+                                <th><em class="fa fa-cog"></em></th>
+                                <th class="hidden-xs">ID</th>
+                                <th>Nom</th>
+                                <th>Age</th>
+                                <th>Type</th>
+                                <th>Sexe</th>
+                                <th>Propriétaire</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for animaux in animauxes %}
+                            <tr>
+                                <td align="center">
+                                    <a href="{{ path('animaux_edit', { 'id': animaux.id }) }}" class="btn btn-default"><em class="fa fa-edit"></em></a>
+                                    <a href="{{ path('animaux_show', { 'id': animaux.id}) }}" class="btn btn-primary"><em class="fa fa-search"></em></a>
+                                </td>
+                                <td class="hidden-xs"><a href="{{ path('animaux_show', { 'id': animaux.id }) }}">{{ animaux.id }}</a></td>
+                                <td>{{ animaux.name }}</td>
+                                <td>{{ animaux.age }}</td>
+                                <td>{{ animaux.type }}</td>
+                                <td>{{ animaux.sexe }}</td>
+                                <td>{{ animaux.user }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-    <ul>
-        <li>
-            <a href="{{ path('animaux_new') }}">Create a new animaux</a>
-        </li>
-        <li>
-            <a href="{{ path('animaux_accouplement') }}">Accoupler des animaux</a>
-        </li>
-    </ul>
+            </div></div></div>
 {% endblock %}

@@ -42,7 +42,6 @@ class AnimauxController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $animalEvent = $this->get('app.event.animal.add');
             $animalEvent -> setAnimal1($animaux);
             $animalEvent -> setAnimal2($animaux);
@@ -50,6 +49,11 @@ class AnimauxController extends Controller
             $dispatcher-> dispatch(GlobalEvents::animal_add, $animalEvent);
             $animaux = $animalEvent->getAnimal1();
 
+            $file = $animaux->getPhoto();
+            $fileName = md5(uniqid()).'.'.$file->guessExtension();
+            $file->move($this->getParameter('images_directory'),$fileName);
+            $animaux->setPhoto($fileName);
+            die($animaux->getName());
             $em = $this->getDoctrine()->getManager();
             $em->persist($animaux);
             $em->flush($animaux);
@@ -88,8 +92,6 @@ class AnimauxController extends Controller
         $deleteForm = $this->createDeleteForm($animaux);
         $editForm = $this->createForm('AppBundle\Form\AnimauxType', $animaux);
         $editForm->handleRequest($request);
-
-
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();

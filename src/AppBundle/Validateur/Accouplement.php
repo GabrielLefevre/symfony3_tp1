@@ -68,6 +68,7 @@ class Accouplement
         $bebe->setAge(0);
         $bebe->setType($this->parent1->getType());
         $bebe->setUser($this->parent1->getUser());
+        $bebe->setPhoto($this->parent1->getPhoto());
         $sexerandom = rand(0,1);
         if($sexerandom == 0) {
             $bebe->setSexe("Femelle");
