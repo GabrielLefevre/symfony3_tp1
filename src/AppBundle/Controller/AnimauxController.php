@@ -5,7 +5,7 @@ use AppBundle\GlobalEvents;
 use AppBundle\Entity\Animaux;
 use AppBundle\Entity\User;
 use AppBundle\Event\AnimalEvent;
-use AppBundle\EventListener\AnimalListener;
+use AppBundle\EventListener\AnimalSubscriber;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Tests\Bundle\NamedBundle;
@@ -38,29 +38,19 @@ class AnimauxController extends Controller
     public function newAction(Request $request)
     {
         $animaux = new Animaux();
-        $form = $this->createForm('AppBundle\Form\AnimauxType', $animaux);
-        $form->handleRequest($request);
+        $form = $this->createForm('AppBundle\Form\AnimauxType', $animaux, array(
+            'validation_groups' => array('create')));
+        if($request->getMethod()=== "POST") {
+            $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $animalEvent = $this->get('app.event.animal.add');
-            $animalEvent -> setAnimal1($animaux);
-            $animalEvent -> setAnimal2($animaux);
-            $dispatcher = $this->get('event_dispatcher');
-            $dispatcher-> dispatch(GlobalEvents::animal_add, $animalEvent);
-            $animaux = $animalEvent->getAnimal1();
-
-            $file = $animaux->getPhoto();
-            $fileName = md5(uniqid()).'.'.$file->guessExtension();
-            $file->move($this->getParameter('images_directory'),$fileName);
-            $animaux->setPhoto($fileName);
-            die($animaux->getName());
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($animaux);
-            $em->flush($animaux);
-
-            return $this->redirectToRoute('animaux_show', array('id' => $animaux->getId()));
+            if ($form->isSubmitted() && $form->isValid()) {
+                $animalEvent = $this->get('app.event.animal');
+                $animalEvent -> setAnimal($animaux);
+                $dispatcher = $this->get('event_dispatcher');
+                $dispatcher-> dispatch(GlobalEvents::ANIMAL_ADD, $animalEvent);
+                return $this->redirectToRoute('animaux_show', array('id' => $animalEvent->getAnimal()->getId()));
+            }
         }
-
         return $this->render('animaux/new.html.twig', array(
             'animaux' => $animaux,
             'form' => $form->createView(),
@@ -74,7 +64,6 @@ class AnimauxController extends Controller
     public function showAction(Animaux $animaux)
     {
         $deleteForm = $this->createDeleteForm($animaux);
-        //$gd = $this->getDoctrine();
         return $this->render('animaux/show.html.twig', array(
             'animaux' => $animaux,
             'delete_form' => $deleteForm->createView(),
@@ -90,13 +79,18 @@ class AnimauxController extends Controller
     {
 
         $deleteForm = $this->createDeleteForm($animaux);
-        $editForm = $this->createForm('AppBundle\Form\AnimauxType', $animaux);
-        $editForm->handleRequest($request);
+        $editForm = $this->createForm('AppBundle\Form\AnimauxType', $animaux, array(
+            'method' => "PUT"));
+        if($request->getMethod()=== "PUT") {
+            $editForm->handleRequest($request);
+            if ($editForm->isSubmitted() && $editForm->isValid()) {
+                $animalEvent = $this->get('app.event.animal');
+                $animalEvent->setAnimal($animaux);
+                $dispatcher = $this->get('event_dispatcher');
+                $dispatcher->dispatch(GlobalEvents::ANIMAL_UPDATE, $animalEvent);
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('animaux_show', array('id' => $animaux->getId()));
+                return $this->redirectToRoute('animaux_show', array('id' => $animalEvent->getAnimal()->getId()));
+            }
         }
 
         return $this->render('animaux/edit.html.twig', array(
@@ -140,6 +134,7 @@ class AnimauxController extends Controller
             ;
     }
 
+
     /**
      * Finds and displays a animaux entity.
      *
@@ -148,29 +143,17 @@ class AnimauxController extends Controller
     {
         $reponse="";
         $form = $this->createForm('AppBundle\Form\AccouplementType');
-        $form->handleRequest($request);
+        if($request->getMethod() === "POST") {
+            $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $data = ($form->getData());
-                $a1 = $data["Animal1"];
-                $a2 = $data["Animal2"];
-
-                $animalEvent = $this->get('app.event.animal.add');
-                $animalEvent->setAnimal1($a1);
-                $animalEvent->setAnimal2($a2);
+                $accouplementEvent = $this->get('app.event.accouplement');
+                $accouplementEvent->setData($form->getData());
                 $dispatcher = $this->get('event_dispatcher');
-                $dispatcher->dispatch(GlobalEvents::animal_add, $animalEvent);
-                $reponse = $animalEvent->getReponse();
-                if ($animalEvent->isValidation()) {
-                    $animaux = $animalEvent->getAnimal1();
-                    $em = $this->getDoctrine()->getManager();
-                    $em->persist($animaux);
-                    $em->flush($animaux);
-                }
-
-            }
+                $dispatcher->dispatch(GlobalEvents::ACCOUPLEMENT, $accouplementEvent);
+            } // FORM
+        } // POST
         return $this->render('animaux/accouplement.html.twig',  array(
             'reponse' => $reponse,
             'accouplement_form' => $form->createView()));
         }
-
 }

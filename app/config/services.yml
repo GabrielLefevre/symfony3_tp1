@@ -20,13 +20,17 @@ services:
             - '@security.token_storage'
         tags:
             - { name: form.type}
-    app.event.animal.add:
+    app.event.animal:
         class: AppBundle\Event\AnimalEvent
-        tags:
-            - {name: animal.event_add}
-    app.eventlistener.animal:
-        class: AppBundle\EventListener\AnimalListener
+    app.event.accouplement:
+        class: AppBundle\Event\AccouplementEvent
+    app.animal_subscriber:
+        class: AppBundle\EventListener\AnimalSubscriber
         arguments:
-            - '@app.validateur.accouplement'
+            - '@doctrine.orm.entity_manager'
         tags:
-            - { name: kernel.event_listener, event:app.event.animal.add, method: verifAdd}
+            - { name: kernel.event_subscriber }
+    app.accouplement_subscriber:
+        class: AppBundle\EventListener\AccouplementSubscriber
+        tags:
+            - {name: kernel.event_subscriber}

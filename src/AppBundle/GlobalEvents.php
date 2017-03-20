@@ -11,6 +11,9 @@ namespace AppBundle;
 
 class GlobalEvents
 {
-    const animal_add = 'app.event.animal.add';
+    const ANIMAL_ADD = 'app.event.animal.add';
+    const ANIMAL_UPDATE = 'app.event.animal.update';
+    const ANIMAL_DELETE = 'app.event.animal.delete';
+    const ACCOUPLEMENT = 'app.event.accouplement';
 
 }

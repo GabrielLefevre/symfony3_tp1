@@ -16,7 +16,7 @@ animaux_new:
 animaux_edit:
     path:     /{id}/edit/
     defaults: { _controller: "AppBundle:Animaux:edit" }
-    methods:  [GET, POST]
+    methods:  [GET, PUT]
 
 animaux_delete:
     path:     /{id}/delete/

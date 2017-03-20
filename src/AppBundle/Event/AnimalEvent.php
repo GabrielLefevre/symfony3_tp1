@@ -8,62 +8,19 @@
  */
 namespace AppBundle\Event;
 
-use AppBundle\Entity\Animaux;
 use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\HttpFoundation\Response;
 
 
 class AnimalEvent extends Event
 {
 
-    protected $animal1;
-    protected $animal2;
-    protected $reponse = " ";
-    protected $validation = true;
+    private $animal;
 
-
-    public function getAnimal1() {
-        return $this->animal1;
+    public function getAnimal() {
+        return $this->animal;
     }
 
-    public function setAnimal1($animal) {
-        return $this->animal1 = $animal;
+    public function setAnimal($animal) {
+        return $this->animal = $animal;
     }
-
-    public function getAnimal2() {
-        return $this->animal2;
-    }
-
-    public function setAnimal2($animal) {
-        return $this->animal2 = $animal;
-    }
-
-    public function getReponse()
-    {
-        return $this->reponse;
-    }
-
-    public function setReponse($reponse)
-    {
-        $this->reponse = $reponse;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isValidation()
-    {
-        return $this->validation;
-    }
-
-    /**
-     * @param bool $validation
-     */
-    public function setValidation($validation)
-    {
-        $this->validation = $validation;
-    }
-
-
-
 }

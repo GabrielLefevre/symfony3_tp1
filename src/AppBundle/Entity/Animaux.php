@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="animaux")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AnimauxRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Animaux
 {
@@ -78,21 +79,29 @@ class Animaux
     private $user;
 
     /**
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank(message="Image necessaire", groups = {"create"})
+     * @Assert\NotBlank(message="Image necessaire", groups={"create"})
      * @Assert\Image(
-     *      minWidth = 200,
-     *     maxWidth = 400,
-     *     minHeight = 200,
-     *     maxHeight = 400,
-     *     groups = {"create"}
+     *      minWidth = 20,
+     *     maxWidth = 4000,
+     *     minHeight = 20,
+     *     maxHeight = 4000,
      *
      * )
      */
     private $photo;
 
+    /**
+     *@ORM\Column(type="string", length=255, nullable=true)
+     *
+     */
+    private $extension;
 
 
+    /**
+     * @ORM\column(type="datetime")
+     * @Assert\DateTime()
+     */
+    private $dateTime;
 
     /**
      * Get id
@@ -238,6 +247,72 @@ class Animaux
     public function setPhoto($photo)
     {
         $this->photo = $photo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * @param mixed $photoName
+     */
+    public function setExtension($extension)
+    {
+        $this->extension = $extension;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDateTime()
+    {
+        return $this->dateTime;
+    }
+
+    /**
+     * @param mixed $dateTime
+     */
+    public function setDateTime( \DateTime $dateTime)
+    {
+        $this->dateTime = $dateTime;
+    }
+
+
+    public function getWebPath() {
+        return $this->getUploadDir().'/'.$this->id.'.'.$this->extension;
+    }
+
+    public function getUploadRootDir() {
+        return __DIR__.'../../web/'.$this->getUploadDir();
+    }
+
+    public function getUploadDir() {
+        return 'uploads/images_animaux_entity';
+    }
+
+    /**
+     * @ORM\PostPersist
+     * @ORM\PostUpdate
+     */
+    public function movePhoto() {
+        if($this->photo != null) {
+            $this->photo->move($this->getUploadDir(),$this->id.'.'.$this->extension);
+            $this->photo = null;
+        }
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     *
+     */public function updateExtensionPhoto() {
+         if ($this->photo != null ) {
+             $this->extension =$this->photo->guessExtension();
+         }
     }
 
 

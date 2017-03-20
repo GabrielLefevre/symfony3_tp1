@@ -4,18 +4,13 @@ namespace AppBundle\Form;
 
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use AppBundle\Entity\Animaux;
-use AppBundle\Repository\UserRepository;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\HttpFoundation\File\File;
 
 class AnimauxType extends AbstractType
 {
@@ -32,21 +27,18 @@ class AnimauxType extends AbstractType
         $builder
             ->add('name')
             ->add('age')
-            ->add('sexe', ChoiceType::class, array('choices' => array('Male' => 'Male', 'Femelle' => 'Femelle')));
-
-
+            ->add('sexe', ChoiceType::class, array('choices' => array('Male' => 'Male', 'Femelle' => 'Femelle')))
+            ->add('photo', FileType::class, array('label' => 'Photo', 'required'=> false));
         $user =  $this->user;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($user){
-        $form = $event->getForm();
-        $animal = $event->getData();
-        if($animal->getUser() == null ) {
-            $animal->setUser($user);
-        }
-        if($animal->getPhoto() == null) {
-            $form->add('photo', FileType::class, array('label' => 'Photo'));
-        }
-        $form->add('Type', EntityType::class, array('class'=>'AppBundle:TypeAnimaux', 'choices'=> $user->getType()));
+            $form = $event->getForm();
+            $animal = $event->getData();
+            $animal->setDateTime(new \DateTime("now"));
+            if($animal->getUser() == null ) {
+                $animal->setUser($user);
+            }
+            $form->add('Type', EntityType::class, array('class'=>'AppBundle:TypeAnimaux', 'choices'=> $user->getType()));
         });
     }
     /**
@@ -55,7 +47,7 @@ class AnimauxType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'validation_groups' => array('create'),
+            'data_class' => 'AppBundle\Entity\Animaux'
         ));
     }
     /**
