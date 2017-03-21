@@ -1,6 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {% for type, flash_messages in app.session.flashBag.all %}
+        {% for flash_message in flash_messages %}
+            <div class="alert alert-{{ type }}" role="alert">{{ flash_message }}</div>
+        {% endfor %}
+    {% endfor %}
 <h1>Animaux list Accouplement</h1>
     <p> Choisir deux animaux pour la reproduction : </p>
 
@@ -9,6 +14,5 @@
         {{  form_rest(accouplement_form) }}
     {{ form_end(accouplement_form) }}
 
-   {{ reponse }}
 
 {% endblock %}

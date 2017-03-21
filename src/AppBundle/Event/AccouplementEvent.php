@@ -14,6 +14,7 @@ class AccouplementEvent extends Event
 {
     private $parent1;
     private $parent2;
+    private $photo;
 
     /**
      * @return mixed
@@ -47,6 +48,24 @@ class AccouplementEvent extends Event
         $this->parent2 = $parent2;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    /**
+     * @param mixed $photo
+     */
+    public function setPhoto($photo)
+    {
+        $this->photo = $photo;
+    }
+
+
+
     public function setData($data) {
        if(!is_array($data)) {
            throw new \InvalidArgumentException("Data n'est pas un array");
@@ -59,6 +78,7 @@ class AccouplementEvent extends Event
         }
         $this->parent1 = $data["Animal1"];
        $this->parent2 = $data["Animal2"];
+       $this->photo = $data["Photo"];
     }
 
     

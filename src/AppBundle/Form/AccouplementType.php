@@ -18,6 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class AccouplementType extends AbstractType
 {
@@ -36,6 +37,7 @@ class AccouplementType extends AbstractType
         $builder
             ->add('Animal1', EntityType::class, array('class'=>'AppBundle:Animaux', 'choices'=> $this->user->getAnimaux()))
             ->add('Animal2', EntityType::class, array('class'=>'AppBundle:Animaux', 'choices'=> $this->user->getAnimaux()))
+            ->add('Photo', FileType::class, array('label' => 'Photo'))
             ->add('Submit', SubmitType::class);
     }
 

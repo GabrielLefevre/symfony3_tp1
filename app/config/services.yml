@@ -32,5 +32,9 @@ services:
             - { name: kernel.event_subscriber }
     app.accouplement_subscriber:
         class: AppBundle\EventListener\AccouplementSubscriber
+        arguments:
+             - '@doctrine.orm.entity_manager'
+             - '@app.entity.animaux'
+             - '@session'
         tags:
             - {name: kernel.event_subscriber}

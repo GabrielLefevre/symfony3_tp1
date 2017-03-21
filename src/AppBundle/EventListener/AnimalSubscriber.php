@@ -8,6 +8,7 @@
  */
 namespace AppBundle\EventListener;
 
+use AppBundle\Entity\Animaux;
 use AppBundle\GlobalEvents;
 use AppBundle\Event\AnimalEvent;
 use Doctrine\ORM\EntityManager;
@@ -17,8 +18,10 @@ class AnimalSubscriber implements EventSubscriberInterface
 {
     private $em;
 
+
     function __construct(EntityManager $em) {
         $this->em = $em;
+
     }
 
     /**

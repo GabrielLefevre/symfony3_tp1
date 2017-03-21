@@ -141,11 +141,11 @@ class AnimauxController extends Controller
      */
     public function accouplementAction(Request $request)
     {
-        $reponse="";
         $form = $this->createForm('AppBundle\Form\AccouplementType');
         if($request->getMethod() === "POST") {
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
+
                 $accouplementEvent = $this->get('app.event.accouplement');
                 $accouplementEvent->setData($form->getData());
                 $dispatcher = $this->get('event_dispatcher');
@@ -153,7 +153,6 @@ class AnimauxController extends Controller
             } // FORM
         } // POST
         return $this->render('animaux/accouplement.html.twig',  array(
-            'reponse' => $reponse,
             'accouplement_form' => $form->createView()));
         }
 }
